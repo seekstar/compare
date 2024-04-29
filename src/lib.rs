@@ -134,6 +134,9 @@ use core::default::Default;
 use core::marker::PhantomData;
 use core::fmt::{self, Debug};
 
+extern crate alloc;
+use alloc::string::String;
+
 /// Returns the maximum of two values according to the given comparator, or `r` if they
 /// are equal.
 ///
@@ -492,6 +495,12 @@ impl<T: Ord + ?Sized> Eq for Natural<T> {}
 
 impl<T: Ord + ?Sized> Debug for Natural<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { write!(f, "Natural") }
+}
+
+impl Compare<String, str> for Natural<String> {
+    fn compare(&self, l: &String, r: &str) -> Ordering {
+        l.as_str().cmp(r)
+    }
 }
 
 /// A comparator that reverses the ordering of another.
