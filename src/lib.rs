@@ -464,14 +464,14 @@ pub struct Natural<T: Ord + ?Sized>(PhantomData<fn(&T)>);
 /// Returns a comparator that delegates to `Ord`.
 pub fn natural<T: Ord + ?Sized>() -> Natural<T> { Natural(PhantomData) }
 
-impl<T: Ord + ?Sized> Compare<T> for Natural<T> {
-    fn compare(&self, l: &T, r: &T) -> Ordering { Ord::cmp(l, r) }
-    fn compares_lt(&self, l: &T, r: &T) -> bool { PartialOrd::lt(l, r) }
-    fn compares_le(&self, l: &T, r: &T) -> bool { PartialOrd::le(l, r) }
-    fn compares_ge(&self, l: &T, r: &T) -> bool { PartialOrd::ge(l, r) }
-    fn compares_gt(&self, l: &T, r: &T) -> bool { PartialOrd::gt(l, r) }
-    fn compares_eq(&self, l: &T, r: &T) -> bool { PartialEq::eq(l, r) }
-    fn compares_ne(&self, l: &T, r: &T) -> bool { PartialEq::ne(l, r) }
+impl<T: Ord + ?Sized + Borrow<Q>, Q: Ord> Compare<T, Q> for Natural<T> {
+    fn compare(&self, l: &T, r: &Q) -> Ordering { l.borrow().cmp(r) }
+    fn compares_lt(&self, l: &T, r: &Q) -> bool { l.borrow().lt(r) }
+    fn compares_le(&self, l: &T, r: &Q) -> bool { l.borrow().le(r) }
+    fn compares_ge(&self, l: &T, r: &Q) -> bool { l.borrow().ge(r) }
+    fn compares_gt(&self, l: &T, r: &Q) -> bool { l.borrow().gt(r) }
+    fn compares_eq(&self, l: &T, r: &Q) -> bool { l.borrow().eq(r) }
+    fn compares_ne(&self, l: &T, r: &Q) -> bool { l.borrow().ne(r) }
 }
 
 impl<T: Ord + ?Sized> Clone for Natural<T> {
